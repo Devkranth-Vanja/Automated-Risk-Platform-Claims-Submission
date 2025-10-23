@@ -1,0 +1,93 @@
+.claims-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: linear-gradient(180deg, #f8f9fc, #e9ecef);
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    /* Prevent horizontal scrollbars */
+    box-sizing: border-box;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.header-card {
+    width: 100%;
+    max-width: 95%;
+}
+
+.buttons-card {
+    width: 100%;
+    max-width: 95%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.action-buttons button {
+    margin-left: 10px;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 95%;
+    /* Allow form to expand with screen size */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-section .form-floating {
+    flex: 1 1 calc(50% - 20px);
+    min-width: 220px;
+}
+
+.form-section .full-width {
+    flex: 1 1 100%;
+}
+
+.section-title {
+    width: 100%;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #ddd;
+}
+
+.nav-tabs .nav-link.active {
+    border-color: #6c757d #6c757d #fff;
+    font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+
+    .form-card,
+    .header-card,
+    .buttons-card {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-section .form-floating {
+        flex: 1 1 100%;
+    }
+}

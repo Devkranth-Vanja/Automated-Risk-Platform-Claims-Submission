@@ -1,0 +1,64 @@
+<div class="policy-container">
+
+  <!-- Header -->
+  <div class="header">
+    <h2>Manage Policies</h2>
+    <div class="search-sort">
+      <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (input)="applyFilter()" />
+      <select [(ngModel)]="pageSize" (change)="applyFilter()">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid-wrapper">
+    <table class="policy-grid">
+      <thead>
+        <tr>
+          <th (click)="sortPolicies('policyNumber')">Policy Number</th>
+          <th (click)="sortPolicies('policyType')">Policy Type</th>
+          <th (click)="sortPolicies('startDate')">Start Date</th>
+          <th (click)="sortPolicies('endDate')">End Date</th>
+          <th>Policy Holder</th> <!-- Separate column -->
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let policy of pagedPolicies">
+          <td>{{ policy.policyNumber }}</td>
+          <td>{{ policy.policyType }}</td>
+          <td>{{ policy.startDate | date:'shortDate' }}</td>
+          <td>{{ policy.endDate | date:'shortDate' }}</td>
+          <td>
+            {{ policy.claimantDetails?.lastName || '' }}, {{ policy.claimantDetails?.firstName || '' }}
+          </td>
+          <td class="action-icons">
+            <!-- View -->
+            <button mat-icon-button color="primary" (click)="onViewPolicy(policy.policyId)" matTooltip="View Policy">
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+            <!-- Edit -->
+            <button mat-icon-button color="accent" (click)="editPolicy(policy)" matTooltip="Edit Policy">
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <!-- Delete -->
+            <button mat-icon-button color="warn" (click)="deletePolicy(policy.policyId)" matTooltip="Delete Policy">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">« Prev</button>
+    <button *ngFor="let page of totalPagesArray" (click)="goToPage(page)" [class.active]="page === currentPage">{{ page
+      }}</button>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next »</button>
+  </div>
+</div>

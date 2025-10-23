@@ -1,0 +1,148 @@
+<div class="claims-page-container">
+
+  <!-- Header -->
+  <div class="card header-card">
+    <h2 class="text-secondary mb-1">Submit New Claim</h2>
+    <p class="text-muted mb-0">
+      Fill in the required details below to submit your claim
+    </p>
+  </div>
+
+  <!-- Buttons Card -->
+  <div class="card buttons-card">
+    <div class="action-buttons">
+      <button
+        type="button"
+        class="btn btn-outline-warning me-2"
+        (click)="clearForm()"
+      >
+        Clear
+      </button>
+      <button
+        type="submit"
+        form="claimForm"
+        class="btn btn-secondary"
+        [disabled]="claimForm.invalid"
+      >
+        Submit Claim
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card form-card">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="currentTab === 'claimant'"
+          (click)="selectTab('claimant')"
+          >Claimant Info</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="currentTab === 'details'"
+          (click)="selectTab('details')"
+          >Claim Details</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [class.active]="currentTab === 'attachments'"
+          (click)="selectTab('attachments')"
+          >Attachments</a
+        >
+      </li>
+    </ul>
+
+    <form [formGroup]="claimForm" (ngSubmit)="onSubmit()" id="claimForm">
+      <!-- Claimant Info -->
+      <div *ngIf="currentTab === 'claimant'" class="form-section">
+        <h5 class="section-title">Claimant Information</h5>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="First Name" />
+          <label for="firstName">First Name</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="middleName" formControlName="middleName" placeholder="Middle Name" />
+          <label for="middleName">Middle Name</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name" />
+          <label for="lastName">Last Name</label>
+        </div>
+        <div class="form-floating">
+          <input type="email" class="form-control" id="claimantEmail" formControlName="claimantEmail" placeholder="Email Address" />
+          <label for="claimantEmail">Email Address</label>
+        </div>
+        <div class="form-floating">
+          <input type="tel" class="form-control" id="claimantPhone" formControlName="claimantPhone" placeholder="Phone Number" />
+          <label for="claimantPhone">Phone Number</label>
+        </div>
+      </div>
+
+      <!-- Claim Details -->
+      <div *ngIf="currentTab === 'details'" class="form-section">
+        <h5 class="section-title">Claim Details</h5>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="policyNumber" formControlName="policyNumber" placeholder="Policy Number" />
+          <label for="policyNumber">Policy Number</label>
+        </div>
+        <div class="form-floating">
+          <select class="form-select" id="claimType" formControlName="claimType">
+            <option value="">Select claim type</option>
+            <option value="Health">Health</option>
+            <option value="Dental">Dental</option>
+            <option value="Vision">Vision</option>
+            <option value="Accident">Accident</option>
+          </select>
+          <label for="claimType">Claim Type</label>
+        </div>
+        <div class="form-floating">
+          <input type="number" class="form-control" id="claimAmount" formControlName="claimAmount" placeholder="Claim Amount" />
+          <label for="claimAmount">Claim Amount ($)</label>
+        </div>
+        <div class="form-floating">
+          <select class="form-select" id="currency" formControlName="currency">
+            <option value="">Select currency</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <label for="currency">Currency</label>
+        </div>
+        <div class="form-floating">
+          <input type="date" class="form-control" id="incidentDate" formControlName="incidentDate" />
+          <label for="incidentDate">Date of Incident</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="incidentLocation" formControlName="incidentLocation" placeholder="Location" />
+          <label for="incidentLocation">Location of Incident</label>
+        </div>
+        <div class="form-floating full-width">
+          <textarea class="form-control" id="claimDescription" formControlName="claimDescription" style="height: 100px"></textarea>
+          <label for="claimDescription">Description</label>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <div *ngIf="currentTab === 'attachments'" class="form-section">
+        <h5 class="section-title">Attachments</h5>
+        <div class="mb-3 w-100">
+          <label for="attachments" class="form-label fw-semibold text-muted">Upload Supporting Documents</label>
+          <input type="file" id="attachments" class="form-control" (change)="onFileSelected($event)" multiple />
+          <small class="text-muted">Upload PDFs or images (max 5 files).</small>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="d-flex justify-content-between mt-4">
+        <button type="button" class="btn btn-outline-secondary" (click)="prevTab()" [disabled]="currentTab === 'claimant'">Previous</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="nextTab()" [disabled]="currentTab === 'attachments'">Next</button>
+      </div>
+    </form>
+  </div>
+</div>

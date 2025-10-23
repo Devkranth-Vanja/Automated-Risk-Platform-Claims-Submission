@@ -1,0 +1,55 @@
+<div class="claimant-container">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>Manage Claimants</h2>
+        <div class="search-sort">
+            <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
+            <select [(ngModel)]="pageSize" (change)="applyFilter()">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-wrapper">
+        <table class="claimant-grid">
+            <thead>
+                <tr>
+                    <th (click)="sortClaimants('firstName')">First Name</th>
+                    <th (click)="sortClaimants('middleName')">Middle Name</th>
+                    <th (click)="sortClaimants('lastName')">Last Name</th>
+                    <th (click)="sortClaimants('email')">Email</th>
+                    <th (click)="sortClaimants('phone')">Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let claimant of pagedClaimants">
+                    <td>{{ claimant.firstName }}</td>
+                    <td>{{ claimant.middleName }}</td>
+                    <td>{{ claimant.lastName }}</td>
+                    <td>{{ claimant.email }}</td>
+                    <td>{{ claimant.phone }}</td>
+                    <td>
+                        <button class="btn btn-icon" (click)="editClaimant(claimant)">
+                            <fa-icon [icon]="'edit'"></fa-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="deleteClaimant(claimant)">
+                            <fa-icon [icon]="faTrash"></fa-icon>
+                        </button>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">« Prev</button>
+        <button *ngFor="let page of totalPagesArray" (click)="goToPage(page)" [class.active]="page === currentPage">{{
+            page }}</button>
+        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next »</button>
+    </div>
+</div>

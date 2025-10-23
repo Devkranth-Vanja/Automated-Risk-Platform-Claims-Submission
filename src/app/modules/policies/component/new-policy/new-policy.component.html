@@ -1,0 +1,115 @@
+<div class="policies-page-container container-fluid py-3">
+
+    <!-- Header -->
+    <div class="card header-card shadow-sm mb-3 p-3">
+        <h2 class="text-secondary mb-1">Add New Policy</h2>
+        <p class="text-muted mb-0">Fill in the required details to create a new policy.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="card buttons-card shadow-sm mb-3 p-3">
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-warning" (click)="clearForm()" [disabled]="isSubmitting">
+                Clear
+            </button>
+
+            <button type="submit" form="policyForm"
+                class="btn btn-primary d-flex align-items-center justify-content-center"
+                [disabled]="policyForm.invalid || isSubmitting">
+
+                <ng-container *ngIf="!isSubmitting; else loading">
+                    Submit Policy
+                </ng-container>
+
+                <ng-template #loading>
+                    <span class="spinner-border spinner-border-sm me-2"></span>Saving...
+                </ng-template>
+            </button>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card form-card shadow-sm p-4">
+        <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" id="policyForm" novalidate>
+
+            <!-- Claimant Selection -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <select class="form-select" id="claimantId" formControlName="claimantId"
+                            [class.is-invalid]="f['claimantId'].touched && f['claimantId'].invalid">
+                            <option value="">Select Claimant</option>
+                            <option *ngFor="let claimant of claimants" [value]="claimant.claimantId">
+                                {{ claimant.lastName }},{{ claimant.firstName }}  
+                            </option>
+
+                        </select>
+                        <label for="claimantId">Claimant <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Claimant is required.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center">
+                    <button type="button" class="btn btn-outline-primary w-100">Add New Claimant</button>
+                </div>
+            </div>
+
+            <!-- Policy Info -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="policyNumber" formControlName="policyNumber"
+                            [class.is-invalid]="f['policyNumber'].touched && f['policyNumber'].invalid"
+                            placeholder="Policy Number" />
+                        <label for="policyNumber">Policy Number <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Policy Number is required.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" id="policyType" formControlName="policyType"
+                            [class.is-invalid]="f['policyType'].touched && f['policyType'].invalid">
+                            <option value="">Select Policy Type</option>
+                            <option value="Health">Health</option>
+                            <option value="Dental">Dental</option>
+                            <option value="Vision">Vision</option>
+                            <option value="Accident">Accident</option>
+                        </select>
+                        <label for="policyType">Policy Type <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Policy Type is required.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="startDate" formControlName="startDate"
+                            [class.is-invalid]="f['startDate'].touched && f['startDate'].invalid" />
+                        <label for="startDate">Start Date <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Start Date is required.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="endDate" formControlName="endDate"
+                            [class.is-invalid]="f['endDate'].touched && f['endDate'].invalid" />
+                        <label for="endDate">End Date <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">End Date is required.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" id="policyDescription" formControlName="policyDescription"
+                            style="height: 150px" placeholder="Description"></textarea>
+                        <label for="policyDescription">Description</label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

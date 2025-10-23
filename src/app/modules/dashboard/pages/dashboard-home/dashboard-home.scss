@@ -1,0 +1,14 @@
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+}
+
+.chart-placeholder {
+  min-height: 220px;
+}
+
+.bg-primary-dark { background-color: #4e73df; }
+.bg-success-dark { background-color: #1cc88a; }
+.bg-warning-dark { background-color: #f6c23e; }
+.bg-danger-dark  { background-color: #e74a3b; }

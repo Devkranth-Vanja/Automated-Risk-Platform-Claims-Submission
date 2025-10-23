@@ -1,0 +1,26 @@
+.policy-modal {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 900px;
+    max-height: 90vh;
+    /* Limit height to 90% of viewport */
+}
+
+.policy-content {
+    border: 1px solid #ccc;
+    padding: 20px;
+    background: #fff;
+    overflow-y: auto;
+    /* Make content scrollable */
+    flex: 1 1 auto;
+    /* Fill remaining space */
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    flex-shrink: 0;
+    /* Keep buttons visible */
+}

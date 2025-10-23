@@ -1,0 +1,126 @@
+<div class="edit-policy-page container-fluid py-3">
+
+  <!-- Header -->
+  <div class="card header-card shadow-sm mb-3 p-3">
+    <h2 class="text-secondary mb-1">Edit Policy</h2>
+    <p class="text-muted mb-0">Update the policy details below</p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="card buttons-card shadow-sm mb-3 p-3">
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-outline-warning" (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button type="submit" form="policyForm" class="btn btn-primary d-flex align-items-center justify-content-center"
+        [disabled]="policyForm.invalid || loading">
+
+        <ng-container *ngIf="!loading; else saving">
+          Save Policy
+        </ng-container>
+
+        <ng-template #saving>
+          <span class="spinner-border spinner-border-sm me-2"></span>Saving...
+        </ng-template>
+      </button>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="card form-card shadow-sm p-4">
+    <form [formGroup]="policyForm" id="policyForm" novalidate (ngSubmit)="onSave()">
+
+      <!-- Row 1: Names -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" formControlName="firstName" placeholder="First Name" readonly />
+            <label>First Name <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['firstName'].touched && f['firstName'].invalid">
+              First Name is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" formControlName="middleName" placeholder="Middle Name" readonly />
+            <label>Middle Name</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" formControlName="lastName" placeholder="Last Name" readonly />
+            <label>Last Name <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['lastName'].touched && f['lastName'].invalid">
+              Last Name is required.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Policy Info -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" class="form-control" formControlName="policyNumber" placeholder="Policy Number" />
+            <label>Policy Number <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['policyNumber'].touched && f['policyNumber'].invalid">
+              Policy Number is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <select class="form-select" formControlName="policyType">
+              <option value="">Select Policy Type</option>
+              <option value="Health">Health</option>
+              <option value="Dental">Dental</option>
+              <option value="Vision">Vision</option>
+              <option value="Accident">Accident</option>
+            </select>
+            <label>Policy Type <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['policyType'].touched && f['policyType'].invalid">
+              Policy Type is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-floating">
+            <input type="date" class="form-control" formControlName="startDate" />
+            <label>Start Date <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['startDate'].touched && f['startDate'].invalid">
+              Start Date is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-floating">
+            <input type="date" class="form-control" formControlName="endDate" />
+            <label>End Date <span class="text-danger">*</span></label>
+            <div class="invalid-feedback" *ngIf="f['endDate'].touched && f['endDate'].invalid">
+              End Date is required.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Description -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="form-floating">
+            <textarea class="form-control" formControlName="policyDescription" style="height: 150px"
+              placeholder="Description"></textarea>
+            <label>Description</label>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

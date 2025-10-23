@@ -1,0 +1,59 @@
+.edit-policy-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  background: #fff;
+  border-radius: 12px;
+
+  .header-card {
+    text-align: center;
+
+    h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .text-muted {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  }
+
+  .policy-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+
+      .form-group {
+        flex: 1 1 200px; // Responsive
+      }
+
+      .full-width {
+        flex: 1 1 100%;
+      }
+    }
+  }
+
+  .edit-policy-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+  }
+}

@@ -1,0 +1,243 @@
+<div class="claimant-page-container container-fluid py-3">
+
+    <!-- Header -->
+    <div class="card header-card shadow-sm mb-3 p-3">
+        <h2 class="text-secondary mb-1">Edit Claimant</h2>
+        <p class="text-muted mb-0">Update the claimant details below.</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="card buttons-card shadow-sm mb-3 p-3">
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-warning" (click)="clearForm()" [disabled]="isSubmitting">
+                Clear
+            </button>
+
+            <button type="submit" form="claimantForm"
+                class="btn btn-primary d-flex align-items-center justify-content-center"
+                [disabled]="claimantForm.invalid || isSubmitting">
+
+                <ng-container *ngIf="!isSubmitting; else loading">
+                    Update Claimant
+                </ng-container>
+
+                <ng-template #loading>
+                    <span class="spinner-border spinner-border-sm me-2"></span>Saving...
+                </ng-template>
+            </button>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card form-card shadow-sm p-4">
+        <form [formGroup]="claimantForm" (ngSubmit)="onSubmit()" id="claimantForm" novalidate>
+
+            <!-- Personal Information -->
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Personal Information</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4" *ngFor="let field of ['firstName','middleName','lastName']">
+                    <div class="form-floating">
+                        <input [id]="field" type="text" class="form-control" [formControlName]="field"
+                            [class.is-invalid]="f[field].touched && f[field].invalid"
+                            [placeholder]="field | titlecase" />
+                        <label [for]="field">{{ field | titlecase }}
+                            <span class="text-danger" *ngIf="f[field].errors?.['required']">*</span>
+                        </label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f[field].errors?.['required']">{{ field | titlecase }} is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" id="dob" class="form-control" formControlName="dob"
+                            [class.is-invalid]="f['dob'].touched && f['dob'].invalid" />
+                        <label for="dob">Date of Birth <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['dob'].errors?.['required']">Date of Birth is required.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" id="maritalStatus" formControlName="maritalStatus"
+                            [class.is-invalid]="f['maritalStatus'].touched && f['maritalStatus'].invalid">
+                            <option value="">Select</option>
+                            <option *ngFor="let status of ['Single','Married','Divorced','Widowed','Other']"
+                                [value]="status">
+                                {{ status }}
+                            </option>
+                        </select>
+                        <label for="maritalStatus">Marital Status</label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['maritalStatus'].errors?.['required']">Marital Status is required.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="nationality" formControlName="nationality"
+                            [class.is-invalid]="f['nationality'].touched && f['nationality'].invalid" />
+                        <label for="nationality">Nationality / Citizenship</label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['nationality'].errors?.['required']">Nationality is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Contact Information</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="email" id="email" class="form-control" formControlName="email"
+                            [class.is-invalid]="f['email'].touched && f['email'].invalid" />
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+                            <span *ngIf="f['email'].errors?.['email']">Enter a valid email.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="email" id="confirmEmail" class="form-control" formControlName="confirmEmail"
+                            [class.is-invalid]="f['confirmEmail'].touched && (f['confirmEmail'].invalid || claimantForm.errors?.['emailsMismatch'])" />
+                        <label for="confirmEmail">Confirm Email <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['confirmEmail'].errors?.['required']">Confirm Email is required.</span>
+                            <span *ngIf="f['confirmEmail'].errors?.['email']">Enter a valid email.</span>
+                            <span *ngIf="claimantForm.errors?.['emailsMismatch']">Emails do not match.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="tel" id="phone" class="form-control" formControlName="phone"
+                            [class.is-invalid]="f['phone'].touched && f['phone'].invalid" />
+                        <label for="phone">Phone Number <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['phone'].errors?.['required']">Phone is required.</span>
+                            <span *ngIf="f['phone'].errors?.['pattern']">Enter a valid phone number.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="tel" id="altPhone" class="form-control" formControlName="altPhone" />
+                        <label for="altPhone">Alternate Phone</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Address</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6" *ngFor="let addr of ['addressLine1','addressLine2']">
+                    <div class="form-floating">
+                        <input [id]="addr" type="text" class="form-control" [formControlName]="addr"
+                            [class.is-invalid]="f[addr].touched && f[addr].invalid" [placeholder]="addr | titlecase" />
+                        <label [for]="addr">{{ addr | titlecase }}
+                            <span class="text-danger" *ngIf="f[addr].errors?.['required']">*</span>
+                        </label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f[addr].errors?.['required']">{{ addr | titlecase }} is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-3" *ngFor="let loc of ['city','state','zip','country']">
+                    <div class="form-floating">
+                        <input [id]="loc" type="text" class="form-control" [formControlName]="loc"
+                            [class.is-invalid]="f[loc].touched && f[loc].invalid" [placeholder]="loc | titlecase" />
+                        <label [for]="loc">{{ loc | titlecase }} <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f[loc].errors?.['required']">{{ loc | titlecase }} is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identification -->
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Identification</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4" *ngFor="let idField of ['passport','driverLicense','taxId']">
+                    <div class="form-floating">
+                        <input [id]="idField" type="text" class="form-control" [formControlName]="idField" />
+                        <label [for]="idField">{{ idField | titlecase }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit Card -->
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Credit Card Information</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" id="cardNumber" class="form-control" formControlName="cardNumber"
+                            [class.is-invalid]="f['cardNumber'].touched && f['cardNumber'].invalid" />
+                        <label for="cardNumber">Card Number <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['cardNumber'].errors?.['required']">Card Number is required.</span>
+                            <span *ngIf="f['cardNumber'].errors?.['pattern']">Enter a valid card number.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" id="cardExpiry" class="form-control" formControlName="cardExpiry"
+                            [class.is-invalid]="f['cardExpiry'].touched && f['cardExpiry'].invalid" />
+                        <label for="cardExpiry">Expiry Date <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['cardExpiry'].errors?.['required']">Expiry is required.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" id="cardCVV" class="form-control" formControlName="cardCVV"
+                            [class.is-invalid]="f['cardCVV'].touched && f['cardCVV'].invalid" />
+                        <label for="cardCVV">CVV <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['cardCVV'].errors?.['required']">CVV is required.</span>
+                            <span *ngIf="f['cardCVV'].errors?.['pattern']">Enter a valid CVV.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" id="cardHolder" class="form-control" formControlName="cardHolder"
+                            [class.is-invalid]="f['cardHolder'].touched && f['cardHolder'].invalid" />
+                        <label for="cardHolder">Card Holder <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">
+                            <span *ngIf="f['cardHolder'].errors?.['required']">Card Holder is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea id="notes" class="form-control" formControlName="notes" rows="3"></textarea>
+            </div>
+
+        </form>
+    </div>
+</div>
