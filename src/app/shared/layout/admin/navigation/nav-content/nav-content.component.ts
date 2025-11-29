@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 //theme version
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.dev';
 
 // project import
 import { NavigationItem } from 'src/app/shared/model/NavigationItems';

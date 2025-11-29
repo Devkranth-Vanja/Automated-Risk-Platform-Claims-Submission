@@ -28,7 +28,7 @@ const routes: Routes = [
           import('./modules/policies/policies-module').then(m => m.PoliciesModule)
       },
       {
-        path: 'claimant',
+        path: 'claims',
         loadChildren: () =>
           import('./modules/claims/claims-module').then(m => m.ClaimsModule)
       },

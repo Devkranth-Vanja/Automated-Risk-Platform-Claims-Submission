@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { Claimant } from '../models/claimant';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.dev';
 import { NotificationService } from 'src/app/shared/service/toastr.service';
 import { ApiResponse } from 'src/app/core/models/ApiResponse';
 @Injectable({

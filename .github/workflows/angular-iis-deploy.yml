@@ -1,0 +1,193 @@
+name: Angular-IIS-CICD
+
+on:
+  push:
+    branches:
+      - 'Feature/**'
+  pull_request:
+    branches:
+      - 'development'
+      - 'main'
+  workflow_dispatch:
+    inputs:
+      sha_id:
+        description: 'SHA of the commit to deploy'
+        required: true
+        type: string
+      environment:
+        description: 'Target Environment (development or production)'
+        required: true
+        type: environment
+
+env:
+  NODE_VERSION: 20.x
+  PROJECT_PATH: free-version
+  ARTIFACT_NAME: AngularAppDist
+
+jobs:
+
+# -------------------------------
+# 1️⃣ Build Angular App
+# -------------------------------
+  build:
+    name: Build Angular App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      - name: Build Angular App
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            npx ng build --configuration=development
+          elif [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.base_ref }}" == "development" ]; then
+            npx ng build --configuration=development
+          else
+            npx ng build --configuration=production
+          fi
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ github.sha }}
+          path: ${{ env.PROJECT_PATH }}/dist
+
+# -------------------------------
+# 2️⃣ Feature Branch Deployment to Local IIS
+# -------------------------------
+  feature-deploy:
+    name: Deploy Feature Branch to Local IIS
+    needs: build
+    runs-on: self-hosted
+    environment: Feature-Staging
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/Feature/')
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ github.sha }}
+          path: deploy_target
+
+      - name: Deploy to Local IIS
+        shell: powershell
+        run: |
+          $iisTargetFolder = "F:\Work\Personal\Deployment\ClaimsApplication\local"
+          $appPoolName = "AspNetCore"
+          $websiteName = "ClaimsSubmission"
+          $websitePort = 8062
+
+          Write-Host "Deploying Angular app to IIS..."
+          if (-not (Test-Path $iisTargetFolder)) {
+              New-Item -ItemType Directory -Force -Path $iisTargetFolder
+          } else {
+              Remove-Item -Path "$iisTargetFolder\*" -Force -Recurse -ErrorAction SilentlyContinue
+          }
+          Copy-Item -Path 'deploy_target\*' -Destination $iisTargetFolder -Recurse
+
+          Write-Host "✅ Deployment completed. Configure IIS Website '$websiteName' manually to point to $iisTargetFolder and use AppPool '$appPoolName'."
+
+# -------------------------------
+# 3️⃣ PR to Development - Trigger Approval
+# -------------------------------
+  dev-iis-trigger:
+    name: Trigger Dev IIS Deployment (Approval)
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.base_ref == 'development'
+
+    steps:
+      - name: Trigger Dev Deployment Workflow
+        uses: benc-uk/workflow-dispatch-action@v1
+        with:
+          workflow: ${{ github.workflow }}
+          ref: ${{ github.base_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            { 
+              "sha_id": "${{ github.sha }}",
+              "environment": "development" 
+            }
+      - name: Log Approval Status
+        run: echo "Deployment pending manual approval to Development-Staging environment."
+
+# -------------------------------
+# 4️⃣ Approved Deployment to Development IIS
+# -------------------------------
+  dev-deploy-approved:
+    name: Approved Deploy to Development IIS
+    needs: build
+    runs-on: self-hosted
+    environment: Development-Staging
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development'
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ github.event.inputs.sha_id }}
+          path: deploy_target
+
+      - name: Deploy to Development IIS
+        shell: powershell
+        run: |
+          $iisTargetFolder = "F:\Work\Personal\Deployment\AngularApp\Development"
+          $appPoolName = "AngularDevPool"
+          $websiteName = "AngularDevSite"
+          $websitePort = 4200
+
+          Write-Host "Deploying Angular app to Development IIS..."
+          if (-not (Test-Path $iisTargetFolder)) {
+              New-Item -ItemType Directory -Force -Path $iisTargetFolder
+          } else {
+              Remove-Item -Path "$iisTargetFolder\*" -Force -Recurse -ErrorAction SilentlyContinue
+          }
+          Copy-Item -Path 'deploy_target\*' -Destination $iisTargetFolder -Recurse
+
+          Write-Host "✅ Approved deployment to Development IIS completed."
+
+# -------------------------------
+# 5️⃣ PR to Main - Production Deployment (Optional)
+# -------------------------------
+  prod-deploy:
+    name: Production Deployment (Approval)
+    needs: build
+    runs-on: self-hosted
+    environment: Production
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ github.sha }}
+          path: deploy_target
+
+      - name: Deploy to Production IIS
+        shell: powershell
+        run: |
+          $iisTargetFolder = "F:\Work\Personal\Deployment\AngularApp\Production"
+          $appPoolName = "AngularProdPool"
+          $websiteName = "AngularProdSite"
+          $websitePort = 80
+
+          Write-Host "Deploying Angular app to Production IIS..."
+          if (-not (Test-Path $iisTargetFolder)) {
+              New-Item -ItemType Directory -Force -Path $iisTargetFolder
+          } else {
+              Remove-Item -Path "$iisTargetFolder\*" -Force -Recurse -ErrorAction SilentlyContinue
+          }
+          Copy-Item -Path 'deploy_target\*' -Destination $iisTargetFolder -Recurse
+
+          Write-Host "✅ Approved deployment to Production IIS completed."

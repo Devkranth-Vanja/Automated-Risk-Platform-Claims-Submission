@@ -4,18 +4,20 @@ import { Observable, of, catchError } from 'rxjs';
 import { PolicyDto } from '../model/PolicyModel';
 import { ApiResponse } from 'src/app/core/models/ApiResponse';
 import { NotificationService } from 'src/app/shared/service/toastr.service';
+import { environment } from 'src/environments/environment.dev';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyService {
-  private apiUrl = 'https://localhost:7041/api/v1/Policy';
+
+  private readonly baseUrl = `${environment.claimServiceApiUrl}/Policy`;
 
   constructor(private http: HttpClient, private toastr: NotificationService) { }
 
   /** Create a new policy */
   createPolicy(policy: PolicyDto): Observable<ApiResponse<PolicyDto>> {
-    return this.http.post<ApiResponse<PolicyDto>>(this.apiUrl, policy)
+    return this.http.post<ApiResponse<PolicyDto>>(this.baseUrl, policy)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to create policy'))
       );
@@ -23,7 +25,7 @@ export class PolicyService {
 
   /** Fetch all policies */
   getAllPolicies(): Observable<ApiResponse<PolicyDto[]>> {
-    return this.http.get<ApiResponse<PolicyDto[]>>(this.apiUrl)
+    return this.http.get<ApiResponse<PolicyDto[]>>(this.baseUrl)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to fetch policies'))
       );
@@ -31,7 +33,7 @@ export class PolicyService {
 
   /** Fetch basic policy info by ID */
   getBasicPolicyById(id: string): Observable<ApiResponse<PolicyDto>> {
-    const url = `${this.apiUrl}/basic/${id}`;
+    const url = `${this.baseUrl}/basic/${id}`;
     return this.http.get<ApiResponse<PolicyDto>>(url)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to fetch basic policy info'))
@@ -40,7 +42,7 @@ export class PolicyService {
 
   /** Fetch policy info along with claimant details */
   getPolicyWithClaimantById(id: string): Observable<ApiResponse<PolicyDto>> {
-    const url = `${this.apiUrl}/details/${id}`;
+    const url = `${this.baseUrl}/details/${id}`;
     return this.http.get<ApiResponse<PolicyDto>>(url)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to fetch policy with claimant info'))
@@ -49,7 +51,7 @@ export class PolicyService {
 
   /** Update existing policy */
   updatePolicy(policy: PolicyDto): Observable<ApiResponse<PolicyDto>> {
-    return this.http.put<ApiResponse<PolicyDto>>(`${this.apiUrl}/${policy.policyId}`, policy)
+    return this.http.put<ApiResponse<PolicyDto>>(`${this.baseUrl}/${policy.policyId}`, policy)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to update policy'))
       );
@@ -57,7 +59,7 @@ export class PolicyService {
 
   /** Soft delete policy by ID */
   deletePolicy(id: string): Observable<ApiResponse<null>> {
-    return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`)
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`)
       .pipe(
         catchError(err => this.handleError(err, 'Failed to delete policy'))
       );
